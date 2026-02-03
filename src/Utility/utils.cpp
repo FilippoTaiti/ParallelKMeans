@@ -65,3 +65,8 @@ float standard_dev(const vector<float> &vector, const float mean) {
 
     return sqrt(sum / static_cast<float>(vector.size()));
 }
+
+bool isEqual(float a, float b) {
+    return fabsf(a-b) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(a), fabsf(b)));
+
+}

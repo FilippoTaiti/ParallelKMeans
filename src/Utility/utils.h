@@ -17,5 +17,7 @@ void kmeansplusplus(const Dataset_SoA &dataset, int k, mt19937_64 &generator, in
 float mean(const vector<float>& vector);
 float standard_dev(const vector<float>& vector, float mean);
 
+bool isEqual(float a, float b);
+
 
 #endif //KMEANSCLUSTERING_UTILS_H

@@ -8,7 +8,7 @@ Dataset_SoA read_csv(const string &name, int n, Dataset_SoA &dataset) {
     ifstream file(name);
 
     if (!file.is_open()) {
-        cerr << "Error opening dataset " << "iris.csv" << endl;
+        cerr << "Error opening dataset " << "blobs.csv" << endl;
         return dataset;
     }
 

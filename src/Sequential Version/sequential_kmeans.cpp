@@ -13,8 +13,10 @@
 
 #include "../Utility/utils.h"
 
-void sequential_kmeans(Dataset_SoA &dataset, const int k, const int number_of_iterations, const int n, vector<float>& centroids_x, vector<float>& centroids_y,
-    int* __restrict number_of_elements_in_a_cluster, float* __restrict sum_x, float* __restrict sum_y) {
+void sequential_kmeans(Dataset_SoA &dataset, const int k, const int number_of_iterations, const int n, vector<float>& centroids_x, vector<float>& centroids_y) {
+    int number_of_elements_in_a_cluster[k];
+    float sum_x[k], sum_y[k];
+
 
     for (int iter = 0; iter < number_of_iterations; iter++) {
 
@@ -45,10 +47,9 @@ void sequential_kmeans(Dataset_SoA &dataset, const int k, const int number_of_it
 
         for (int i = 0; i < k; i++) {
             if (number_of_elements_in_a_cluster[i] > 0) {
-                centroids_x[i] = sum_x[i] / static_cast<float>(number_of_elements_in_a_cluster[i]);
-                centroids_y[i] = sum_y[i] / static_cast<float>(number_of_elements_in_a_cluster[i]);
+                centroids_x[i] = sum_x[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
+                centroids_y[i] = sum_y[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
             }
-
         }
 
     }

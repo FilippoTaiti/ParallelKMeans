@@ -22,7 +22,7 @@ void parallel_kmeans(Dataset_SoA &dataset, const int k, const int number_of_iter
 #pragma omp parallel default(none) shared(k, number_of_iterations, centroids_x,\
     centroids_y, n, dataset, number_of_elements_in_a_cluster, sum_x, sum_y)
         {
-#pragma omp for reduction(+: number_of_elements_in_a_cluster, sum_x, sum_y) schedule(dynamic, 256)
+#pragma omp for reduction(+: number_of_elements_in_a_cluster, sum_x, sum_y) schedule(static)
             for (int i = 0; i < n; i++) {
                 float min_distance = FLT_MAX;
                 int nearest_cluster = -1;
@@ -42,13 +42,14 @@ void parallel_kmeans(Dataset_SoA &dataset, const int k, const int number_of_iter
             }
 
 
-#pragma omp for schedule(dynamic, 256)
+#pragma omp for schedule(static)
             for (int i = 0; i < k; i++) {
                 if (number_of_elements_in_a_cluster[i] > 0) {
-                    centroids_x[i] = sum_x[i] / static_cast<float>(number_of_elements_in_a_cluster[i]);
-                    centroids_y[i] = sum_y[i] / static_cast<float>(number_of_elements_in_a_cluster[i]);
+                 centroids_x[i] = sum_x[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
+                centroids_y[i] = sum_y[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
                 }
             }
+
         }
     }
 }
