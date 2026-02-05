@@ -11,13 +11,12 @@
 
 void print_vector(vector<float>& vector);
 
-void kmeansplusplus(const Dataset_SoA &dataset, int k, mt19937_64 &generator, int n, float* __restrict squared_distances, vector<float>& centroids_x,
-    vector<float>& centroids_y);
+void kmeansplusplus(const Dataset_SoA &dataset, int k, mt19937_64 &generator, int n, float* __restrict squared_distances, float* __restrict__ centroids_x,
+    float* __restrict__ centroids_y);
 
-float mean(const vector<float>& vector);
-float standard_dev(const vector<float>& vector, float mean);
+double mean(const vector<double>& vector);
+double standard_dev(const vector<double>& vector, double mean);
 
-bool isEqual(float a, float b);
 
 
 #endif //KMEANSCLUSTERING_UTILS_H

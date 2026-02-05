@@ -5,8 +5,8 @@
 #include "utils.h"
 
 
-void kmeansplusplus(const Dataset_SoA &dataset, const int k, mt19937_64 &generator, const int n, float* __restrict squared_distances, vector<float>& centroids_x,
-    vector<float>& centroids_y) {
+void kmeansplusplus(const Dataset_SoA &dataset, const int k, mt19937_64 &generator, const int n, float* __restrict squared_distances, float* __restrict__ centroids_x,
+    float* __restrict__ centroids_y) {
 
     uniform_int_distribution<> dis(1, n);
     const int random_index = dis(generator);
@@ -47,26 +47,21 @@ void kmeansplusplus(const Dataset_SoA &dataset, const int k, mt19937_64 &generat
 }
 
 
-float mean(const vector<float> &vector) {
-    float sum = 0.0f;
+double mean(const vector<double> &vector) {
+    double sum = 0.0;
     const int N = vector.size();
     for (int i = 0; i < N; i++) {
         sum += vector[i];
     }
-    return sum / static_cast<float>(vector.size());
+    return sum / static_cast<double>(vector.size());
 }
 
-float standard_dev(const vector<float> &vector, const float mean) {
-    float sum = 0.0f;
+double standard_dev(const vector<double> &vector, const double mean) {
+    double sum = 0.0;
     int N = vector.size();
     for (int i = 0; i < N; i++) {
         sum += (vector[i] - mean) * (vector[i] - mean);
     }
 
-    return sqrt(sum / static_cast<float>(vector.size()));
-}
-
-bool isEqual(float a, float b) {
-    return fabsf(a-b) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(a), fabsf(b)));
-
+    return sqrt(sum / static_cast<double>(vector.size()));
 }

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 project(kmeansclustering)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ftree-vectorize -march=native -mtune=native -ffast-math -flto")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ftree-vectorize -march=native -mtune=native -Ofast -flto -funroll-loops")
 
 find_package(OpenMP REQUIRED)
 
@@ -22,6 +22,7 @@ add_executable(kmeans_par src/main.cpp
         src/Utility/utils.cpp
         src/Utility/utils.h)
 
+set_source_files_properties(src/Sequential Version/sequential_kmeans.cpp src/Sequential Version/parallel_kmeans.cpp PROPERTIES COMPILE_FLAGS "-fopt-info-vec-missed")
 
 
 target_link_libraries(kmeans_par PRIVATE OpenMP::OpenMP_CXX)

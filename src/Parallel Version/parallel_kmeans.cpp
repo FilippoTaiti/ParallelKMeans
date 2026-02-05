@@ -12,17 +12,17 @@
 
 
 void parallel_kmeans(Dataset_SoA &dataset, const int k, const int number_of_iterations,
-                     const int n, vector<float> &centroids_x, vector<float> &centroids_y) {
+                     const int n, float* __restrict__ centroids_x, float* __restrict__ centroids_y) {
+    alignas(64) int number_of_elements_in_a_cluster[k];
+    alignas(64) float sum_x[k], sum_y[k];
     for (int iter = 0; iter < number_of_iterations; iter++) {
-        int number_of_elements_in_a_cluster[k];
-        float sum_x[k], sum_y[k];
         memset(number_of_elements_in_a_cluster, 0, sizeof(int) * k);
-        memset(sum_x, 0, sizeof(float) * k);
-        memset(sum_y, 0, sizeof(float) * k);
+        memset(sum_x, 0.0f, sizeof(float) * k);
+        memset(sum_y, 0.0f, sizeof(float) * k);
 #pragma omp parallel default(none) shared(k, number_of_iterations, centroids_x,\
     centroids_y, n, dataset, number_of_elements_in_a_cluster, sum_x, sum_y)
         {
-#pragma omp for reduction(+: number_of_elements_in_a_cluster, sum_x, sum_y) schedule(static)
+#pragma omp for reduction(+: number_of_elements_in_a_cluster, sum_x, sum_y) schedule(guided, 256)
             for (int i = 0; i < n; i++) {
                 float min_distance = FLT_MAX;
                 int nearest_cluster = -1;
@@ -34,22 +34,19 @@ void parallel_kmeans(Dataset_SoA &dataset, const int k, const int number_of_iter
                         nearest_cluster = b;
                     }
                 }
-                dataset.cluster_id[i] = nearest_cluster;
                 number_of_elements_in_a_cluster[nearest_cluster]++;
                 sum_x[nearest_cluster] += dataset.x[i];
                 sum_y[nearest_cluster] += dataset.y[i];
-
             }
 
 
-#pragma omp for schedule(static)
+#pragma omp for schedule(guided, 256)
             for (int i = 0; i < k; i++) {
                 if (number_of_elements_in_a_cluster[i] > 0) {
-                 centroids_x[i] = sum_x[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
-                centroids_y[i] = sum_y[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
+                    centroids_x[i] = sum_x[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
+                    centroids_y[i] = sum_y[i] / (static_cast<float>(number_of_elements_in_a_cluster[i]));
                 }
             }
-
         }
     }
 }
