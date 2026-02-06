@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 project(kmeansclustering)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ftree-vectorize -march=native -mtune=native -Ofast -flto -funroll-loops")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto -funroll-loops")
 
 find_package(OpenMP REQUIRED)
 
